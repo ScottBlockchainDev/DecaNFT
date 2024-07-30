@@ -169,6 +169,18 @@ module.exports = {
         apiKey: {
             mainnet: "5KKUIPX5EDA1KX2RU7ZSAKYWMEJWPZQT4X",
             sepolia: "5KKUIPX5EDA1KX2RU7ZSAKYWMEJWPZQT4X",
+            "blast-testnet": "blast-testnet",
         },
+        customChains: [
+            {
+                network: "blast-testnet",
+                chainId: 168587773,
+                urls: {
+                    apiURL: "https://api-sepolia.blastscan.io/api",
+                    browserURL: "https://testnet.blastscan.io/",
+                },
+            },
+        ],
+        enabled: true,
     },
 }

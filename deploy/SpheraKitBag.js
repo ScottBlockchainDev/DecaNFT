@@ -1,4 +1,4 @@
-const deployArgs = require("../../constants/spheraKitBagDeployArgs.json")
+const deployArgs = require("../constants/spheraKitBagDeployArgs.json")
 
 module.exports = async function ({ deployments, getNamedAccounts }) {
     const { deploy } = deployments

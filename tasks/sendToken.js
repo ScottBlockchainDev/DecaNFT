@@ -3,7 +3,7 @@ const CHAIN_ID = require("../constants/chainIds.json")
 module.exports = async function (taskArgs, hre) {
     const signers = await ethers.getSigners()
     const owner = signers[0]
-    const toAddress = owner.address;
+    const toAddress = owner.address
     const remoteChainId = CHAIN_ID[taskArgs.targetNetwork]
     const tokenIds = [15, 16, 17]
 
@@ -13,7 +13,10 @@ module.exports = async function (taskArgs, hre) {
     let decanft = await ethers.getContract("DecaNFT")
     let minGasToTransferAndStore = await decanft.minDstGasLookup(remoteChainId, 1)
     let transferGasPerToken = await decanft.dstChainIdToTransferGas(remoteChainId)
-    let adapterParams = ethers.utils.solidityPack(["uint16", "uint256"], [1, minGasToTransferAndStore.add(transferGasPerToken.mul(tokenIds.length))])
+    let adapterParams = ethers.utils.solidityPack(
+        ["uint16", "uint256"],
+        [1, minGasToTransferAndStore.add(transferGasPerToken.mul(tokenIds.length))]
+    )
     console.log(`AdapterParams dstGas: ${minGasToTransferAndStore.add(transferGasPerToken.mul(tokenIds.length)).toString()}`)
 
     let fees = await decanft.estimateSendBatchFee(remoteChainId, toAddress, tokenIds, false, adapterParams)
@@ -21,24 +24,25 @@ module.exports = async function (taskArgs, hre) {
 
     console.log("Number Of Tokens: ", tokenIds.length)
 
-    console.log(owner.address,                  // 'from' address to send tokens
-        remoteChainId,                  // remote LayerZero chainId
-        toAddress,                      // 'to' address to send tokens
-        tokenIds,                       // tokenIds to send
-        owner.address,                  // refund address (if too much message fee is sent, it gets refunded)
-        ethers.constants.AddressZero,   // address(0x0) if not paying in ZRO (LayerZero Token)
-        adapterParams,                  // flexible bytes array to indicate messaging adapter services
-    );
+    console.log(
+        owner.address, // 'from' address to send tokens
+        remoteChainId, // remote LayerZero chainId
+        toAddress, // 'to' address to send tokens
+        tokenIds, // tokenIds to send
+        owner.address, // refund address (if too much message fee is sent, it gets refunded)
+        ethers.constants.AddressZero, // address(0x0) if not paying in ZRO (LayerZero Token)
+        adapterParams // flexible bytes array to indicate messaging adapter services
+    )
     try {
         let tx = await (
             await decanft.sendBatchFrom(
-                owner.address,                  // 'from' address to send tokens
-                remoteChainId,                  // remote LayerZero chainId
-                toAddress,                      // 'to' address to send tokens
-                tokenIds,                       // tokenIds to send
-                owner.address,                  // refund address (if too much message fee is sent, it gets refunded)
-                ethers.constants.AddressZero,   // address(0x0) if not paying in ZRO (LayerZero Token)
-                adapterParams,                  // flexible bytes array to indicate messaging adapter services
+                owner.address, // 'from' address to send tokens
+                remoteChainId, // remote LayerZero chainId
+                toAddress, // 'to' address to send tokens
+                tokenIds, // tokenIds to send
+                owner.address, // refund address (if too much message fee is sent, it gets refunded)
+                ethers.constants.AddressZero, // address(0x0) if not paying in ZRO (LayerZero Token)
+                adapterParams, // flexible bytes array to indicate messaging adapter services
                 { value: fees[0].mul(5).div(4) }
             )
         ).wait()
